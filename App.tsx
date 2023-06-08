@@ -1,3 +1,6 @@
+import './shim';
+import ECPairFactory from 'ecpair';
+import ecc from '@bitcoinerlab/secp256k1';
 /**
  * Sample React Native App
  * https://github.com/facebook/react-native
@@ -17,13 +20,7 @@ import {
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import {Colors, Header} from 'react-native/Libraries/NewAppScreen';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -61,6 +58,11 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+  const ECPair = ECPairFactory(ecc);
+  const bitcoin = require('bitcoinjs-lib');
+  const keyPair = ECPair.makeRandom();
+  const {address} = bitcoin.payments.p2pkh({pubkey: keyPair.publicKey});
+  console.log(address);
 
   return (
     <SafeAreaView style={backgroundStyle}>
@@ -76,21 +78,9 @@ function App(): JSX.Element {
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text>
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
+          <Section title="Creating random address">
+            <Text style={styles.highlight}>Address: {address}</Text>
           </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
         </View>
       </ScrollView>
     </SafeAreaView>
